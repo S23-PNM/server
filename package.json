@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/S23-PNM/server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/S23-PNM/server/issues"
+  },
+  "homepage": "https://github.com/S23-PNM/server#readme",
+  "dependencies": {
+    "@prisma/client": "^4.13.0",
+    "@types/express": "^4.17.17",
+    "express": "^4.18.2",
+    "prisma": "^4.13.0",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.4"
+  }
+}
