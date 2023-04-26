@@ -19,6 +19,9 @@ async function main() {
     });
     res.status(204).send("");
   });
+  app.get('api/data/mobile',async (req,res)=>{
+    
+  })
   const port = 3000 || process.env.PORT;
   app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
