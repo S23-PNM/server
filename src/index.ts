@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express, { json } from "express";
 import morgan from "morgan";
-import { groupBy } from "lodash";
+import { filter, groupBy } from "lodash";
 const levels = { 30: "empty", 100: "moderate", 150: "crowded" };
 function getOccupancyLevel(value: number) {
   let result = "crowded";
@@ -74,6 +74,33 @@ async function main() {
 
     return res.json({ data: data });
   });
+
+  app.get("/api/data/occupancy", async (req, res) => {
+    const e = new Date();
+    const b = new Date(e.getTime() - 1000 * 60 * 60 * 24);
+    const result = await prisma.event.findMany({
+      where: { time: { gte: b, lte: e } },
+      select: { enter: true, location: true, time: true },
+    });
+
+    const data = Object.entries(groupBy(result, "location")).map(
+      ([location, d]) => {
+        const times: any[] = [];
+        for (let i = 23; i >= 0; i--) {
+          const time = new Date(e.getTime() - 1000 * 60 * 60 * i);
+          const data = filter(d, (d) => d.time < time);
+          const enter = data.filter((d) => d.enter).length;
+          const info = { enter, exit: data.length - enter };
+          const pop = Math.abs(info.enter - info.exit);
+          times.push({ time: i - 23, count: pop });
+        }
+        return { location, times, now: e.getTime() };
+      }
+    );
+
+    return res.json({ data: data });
+  });
+
   const port = 8000 || process.env.PORT;
   app.listen(port, async () => {
     console.log(`Server is running on port ${port}`);
