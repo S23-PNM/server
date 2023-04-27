@@ -85,14 +85,16 @@ async function main() {
 
     const data = Object.entries(groupBy(result, "location")).map(
       ([location, d]) => {
-        const times: any[] = [];
+        const times: { time: number; enter: number; exit: number }[] = [];
         for (let i = 23; i >= 0; i--) {
-          const time = new Date(e.getTime() - 1000 * 60 * 60 * i);
-          const data = filter(d, (d) => d.time < time);
+          const timeStart = new Date(e.getTime() - 1000 * 60 * 60 * (i + 1));
+          const timeEnd = new Date(e.getTime() - 1000 * 60 * 60 * i);
+          const data = filter(
+            d,
+            (d) => d.time >= timeStart && d.time <= timeEnd
+          );
           const enter = data.filter((d) => d.enter).length;
-          const info = { enter, exit: data.length - enter };
-          const pop = Math.abs(info.enter - info.exit);
-          times.push({ time: i - 23, count: pop });
+          times.push({ time: i - 23, enter, exit: data.length - enter });
         }
         return { location, times, now: e.getTime() };
       }
